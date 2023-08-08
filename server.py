@@ -36,7 +36,7 @@ async def register_reader(reader_info: ReaderInfo, request: Request):
         # handle error  
         pass  
   
-@app.post("/connection_token")  
+@app.get("/connection_token")  
 async def connection_token():  
     try:  
         token = stripe.terminal.ConnectionToken.create()  
