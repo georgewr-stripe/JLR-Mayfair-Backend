@@ -4,8 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import stripe  
 import os
-import uvicorn
-
 
 from models import PaymentIntentInfo, ReaderInfo  
 
@@ -78,8 +76,3 @@ async def create_setup_intent(request: Request):
 async def attach_payment_method_to_customer(request: Request):  
     # Implementation here  
     pass  
-
-
-
-if __name__ == "__main__":
-  uvicorn.run("server:app", host="0.0.0.0", port=int(os.environ.get('PORT', 443)), reload=True)
