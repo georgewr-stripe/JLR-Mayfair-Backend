@@ -24,7 +24,7 @@ stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
   
   
 @app.post("/register_reader")  
-async def register_reader(reader_info: ReaderInfo = Depends(ReaderInfo)):  
+async def register_reader(reader_info: ReaderInfo = Depends(ReaderInfo.as_form)):  
     try:  
         reader = stripe.terminal.Reader.create(  
             **reader_info 
@@ -44,10 +44,11 @@ async def connection_token():
         pass  
   
 @app.post("/create_payment_intent")  
-async def create_payment_intent(payment_info: PaymentIntentInfo = Depends(PaymentIntentInfo)):  
+async def create_payment_intent(payment_info: PaymentIntentInfo = Depends(PaymentIntentInfo.as_form)):  
+    print(payment_info)
     try:  
         payment_intent = stripe.PaymentIntent.create(  
-            **payment_info
+            **payment_info.model_dump()
         )  
         return JSONResponse({  
             "intent": payment_intent.id,  
@@ -55,6 +56,7 @@ async def create_payment_intent(payment_info: PaymentIntentInfo = Depends(Paymen
         })  
     except Exception as e:  
         # handle error  
+        print(e)
         pass  
   
 @app.post("/capture_payment_intent")  
