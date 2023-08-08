@@ -36,7 +36,7 @@ async def register_reader(reader_info: ReaderInfo, request: Request):
         # handle error  
         pass  
   
-@app.get("/connection_token")  
+@app.post("/connection_token")  
 async def connection_token():  
     try:  
         token = stripe.terminal.ConnectionToken.create()  
@@ -82,4 +82,4 @@ async def attach_payment_method_to_customer(request: Request):
 
 
 if __name__ == "__main__":
-  uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+  uvicorn.run("server:app", host="0.0.0.0", port=int(os.environ.get('PORT', 443)), reload=True)
