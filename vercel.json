@@ -1,5 +1,5 @@
 {
-    "devCommand": "uvicorn main:app --host 0.0.0.0",
+    "devCommand": "uvicorn server:app --host 0.0.0.0",
     "builds": [
       {
         "src": "server.py",
