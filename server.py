@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, Request  
+from fastapi import Depends, FastAPI, Form, Request  
 from fastapi.responses import JSONResponse, FileResponse  
 from fastapi.middleware.cors import CORSMiddleware  
 from dotenv import load_dotenv
@@ -24,7 +24,7 @@ stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
   
   
 @app.post("/register_reader")  
-async def register_reader(reader_info: ReaderInfo = Depends()):  
+async def register_reader(reader_info: ReaderInfo = Depends(ReaderInfo)):  
     try:  
         reader = stripe.terminal.Reader.create(  
             **reader_info 
@@ -44,7 +44,7 @@ async def connection_token():
         pass  
   
 @app.post("/create_payment_intent")  
-async def create_payment_intent(payment_info: PaymentIntentInfo = Depends()):  
+async def create_payment_intent(payment_info: PaymentIntentInfo = Depends(PaymentIntentInfo)):  
     try:  
         payment_intent = stripe.PaymentIntent.create(  
             **payment_info
