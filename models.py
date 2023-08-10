@@ -5,6 +5,8 @@ import inspect
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 
+DESCRIPTION = 'JLR L460 Range Rover Reservation'
+
 
 def as_form(cls: Type[BaseModel]):
     new_parameters = []
@@ -41,6 +43,17 @@ class PaymentIntentInfo(BaseModel):
     currency: Optional[str] = 'gbp'
     payment_method_types: Optional[List[str]] = ['card_present']
     capture_method: Optional[str] = 'manual'
-    description: Optional[str] = 'Test Payment'
+    description: Optional[str] = DESCRIPTION
 
 
+@as_form
+class CaptureCancelPaymentIntentInfo(BaseModel):
+    payment_intent_id: str
+
+
+@as_form
+class CreateSetupIntentInfo(BaseModel):
+    payment_method_types: Optional[List[str]] = ['card_present']
+    customer: Optional[str]
+    description: Optional[str] = DESCRIPTION
+    on_behalf_of: Optional[str]

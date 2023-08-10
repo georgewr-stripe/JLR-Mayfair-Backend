@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import stripe  
 import os
 
-from models import PaymentIntentInfo, ReaderInfo  
+from models import CreateCustomerInfo, PaymentIntentInfo, ReaderInfo , CaptureCancelPaymentIntentInfo, CreateSetupIntentInfo
 
 load_dotenv()
 
@@ -45,7 +45,6 @@ async def connection_token():
   
 @app.post("/create_payment_intent")  
 async def create_payment_intent(payment_info: PaymentIntentInfo = Depends(PaymentIntentInfo.as_form)):  
-    print(payment_info)
     try:  
         payment_intent = stripe.PaymentIntent.create(  
             **payment_info.model_dump()
@@ -60,21 +59,34 @@ async def create_payment_intent(payment_info: PaymentIntentInfo = Depends(Paymen
         pass  
   
 @app.post("/capture_payment_intent")  
-async def capture_payment_intent(request: Request):  
-    # Implementation here  
-    pass  
+async def capture_payment_intent(data: CaptureCancelPaymentIntentInfo = Depends(CaptureCancelPaymentIntentInfo.as_form)):  
+    stripe.PaymentIntent.retrieve(data.payment_intent_id).capture()
   
 @app.post("/cancel_payment_intent")  
-async def cancel_payment_intent(request: Request):  
-    # Implementation here  
-    pass  
+async def cancel_payment_intent(data: CaptureCancelPaymentIntentInfo = Depends(CaptureCancelPaymentIntentInfo.as_form)):  
+   stripe.PaymentIntent.retrieve(data.payment_intent_id).cancel() 
   
 @app.post("/create_setup_intent")  
-async def create_setup_intent(request: Request):  
-    # Implementation here  
-    pass  
+async def create_setup_intent(setup_info: CreateSetupIntentInfo = Depends(CreateSetupIntentInfo.as_form)):  
+    try:  
+        setup_intent = stripe.SetupAttempt.create(  
+            **setup_info.model_dump()
+        )  
+        return JSONResponse({  
+            "intent": setup_intent.id,  
+            "secret": setup_intent.client_secret  
+        })  
+    except Exception as e:  
+        # handle error  
+        print(e)
+        pass 
   
 @app.post("/attach_payment_method_to_customer")  
 async def attach_payment_method_to_customer(request: Request):  
     # Implementation here  
     pass  
+
+@app.post("/create_customer")
+async def create_customer(customer_info: CreateCustomerInfo = Depends(CreateCustomerInfo.as_form)):
+    customer = await stripe.Customer.create(*customer_info.model_dump())
+    return JSONResponse({"customer_id": customer.id})
