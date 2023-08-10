@@ -88,5 +88,5 @@ async def attach_payment_method_to_customer(request: Request):
 
 @app.post("/create_customer")
 async def create_customer(customer_info: CreateCustomerInfo = Depends(CreateCustomerInfo.as_form)):
-    customer = await stripe.Customer.create(*customer_info.model_dump())
+    customer = stripe.Customer.create(**customer_info.model_dump())
     return JSONResponse({"customer_id": customer.id})
