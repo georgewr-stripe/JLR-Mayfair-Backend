@@ -40,6 +40,7 @@ class ReaderInfo(BaseModel):
 @as_form
 class PaymentIntentInfo(BaseModel):
     amount: int
+    customer: str
     currency: Optional[str] = 'gbp'
     payment_method_types: Optional[List[str]] = ['card_present']
     capture_method: Optional[str] = 'manual'
@@ -57,3 +58,10 @@ class CreateSetupIntentInfo(BaseModel):
     customer: Optional[str]
     description: Optional[str] = DESCRIPTION
     on_behalf_of: Optional[str]
+
+
+@as_form
+class CreateCustomerInfo(BaseModel):
+    name: str
+    email: str
+    phone: str
